@@ -26,3 +26,12 @@ services:
       MYSQL_DATABASE: miniautorizador
       MYSQL_ROOT_PASSWORD:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+  app:
+    depends_on:
+      - mysql
+    build: .
+    ports:
+      - "8080:8080"
+    
+  
