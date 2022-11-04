@@ -1,7 +1,5 @@
-FROM maven:3.8.2-jdk-8
-
+FROM openjdk:8-jre-alpine
+EXPOSE 8080:8080
 WORKDIR /miniautorizador
-COPY . .
-RUN mvn clean install
-
-CMD mvn spring-boot:run
+COPY target/miniautorizador-0.0.1-SNAPSHOT.jar .
+ENTRYPOINT [ "java", "-jar", "miniautorizador-0.0.1-SNAPSHOT.jar" ]
