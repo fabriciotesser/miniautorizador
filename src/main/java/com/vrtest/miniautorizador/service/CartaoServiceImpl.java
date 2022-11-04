@@ -49,8 +49,11 @@ public class CartaoServiceImpl implements CartaoService {
 
 	@Override
 	public BigDecimal getSaldoCartao(String numeroCartao) throws CartaoNaoEncontradoException {
+
 		one(numeroCartao);
-		return this.repository.getSaldoCartao(numeroCartao);
+		BigDecimal saldo = this.repository.getSaldoCartao(numeroCartao);
+
+		return saldo == null ? BigDecimal.ZERO : saldo;
 	}
 
 	private Cartao one(String numeroCartao) throws CartaoNaoEncontradoException {

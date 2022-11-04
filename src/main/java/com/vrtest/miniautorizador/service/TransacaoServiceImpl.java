@@ -27,13 +27,13 @@ public class TransacaoServiceImpl implements TransacaoService {
 	@Override
 	public void gerarTransacao(TransacaoCommand command) throws SaldoInsuficienteException, CartaoNaoEncontradoException {
 		Cartao cartao = this.cartaoService.one(command.getNumeroCartao(), command.getSenhaCartao());
-		validaSaldoCartao(cartao, command.getValor());
+		validaSaldoCartao(command.getNumeroCartao(), command.getValor());
 		Transacao transacao = new Transacao(cartao, command.getValor().multiply(BigDecimal.valueOf(-1)));
 		this.repository.save(transacao);
 	}
 
-	private void validaSaldoCartao(Cartao cartao, BigDecimal valorTransacao) throws SaldoInsuficienteException, CartaoNaoEncontradoException {
-		BigDecimal saldoCartao = this.cartaoService.getSaldoCartao(cartao.getNumeroCartao());
+	private void validaSaldoCartao(String numeroCartao, BigDecimal valorTransacao) throws SaldoInsuficienteException, CartaoNaoEncontradoException {
+		BigDecimal saldoCartao = this.cartaoService.getSaldoCartao(numeroCartao);
 		saldoCartao = saldoCartao.subtract(valorTransacao);
 		if(saldoCartao.compareTo(BigDecimal.ZERO) < 0) {
 			throw new SaldoInsuficienteException("SALDO_INSUFICIENTE");

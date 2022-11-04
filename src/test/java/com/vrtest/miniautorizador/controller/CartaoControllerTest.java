@@ -1,12 +1,15 @@
 package com.vrtest.miniautorizador.controller;
 
+import static java.math.BigDecimal.valueOf;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -14,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -48,12 +50,12 @@ public class CartaoControllerTest {
 		CartaoCommand command = new CartaoCommand();
 		command.setNumeroCartao(NUMERO_CARTAO);
 		command.setSenha(SENHA_CARTAO);
-		when(repository.findByNumeroCartaoAndSenha(anyString(), anyString())).thenReturn(Optional.ofNullable(null));
+		when(repository.findByNumeroCartaoAndSenha(anyString(), anyString())).thenReturn(ofNullable(null));
 		this.mockMvc.perform(MockMvcRequestBuilders
 				.post("/cartoes")
 				.content(objectMapper.writeValueAsBytes(command))
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON))
+				.contentType(APPLICATION_JSON)
+				.accept(APPLICATION_JSON))
 		.andExpect(status().isCreated())
 		.andExpect(content().string(containsString("numeroCartao")));
 	}
@@ -63,12 +65,12 @@ public class CartaoControllerTest {
 		CartaoCommand command = new CartaoCommand();
 		command.setNumeroCartao(NUMERO_CARTAO);
 		command.setSenha(SENHA_CARTAO);
-		when(repository.findByNumeroCartaoAndSenha(anyString(), anyString())).thenReturn(Optional.of(new Cartao(command)));
+		when(repository.findByNumeroCartaoAndSenha(anyString(), anyString())).thenReturn(of(new Cartao(command)));
 		this.mockMvc.perform(MockMvcRequestBuilders
 				.post("/cartoes")
 				.content(objectMapper.writeValueAsBytes(command))
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON))
+				.contentType(APPLICATION_JSON)
+				.accept(APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity());
 	}
 
@@ -76,10 +78,10 @@ public class CartaoControllerTest {
 	public void deveRecuperarSaldoCartao() throws Exception {
 		Optional<Cartao> cartao = Optional.of(new Cartao());
 		when(repository.findById(NUMERO_CARTAO)).thenReturn(cartao);
-		when(repository.getSaldoCartao(NUMERO_CARTAO)).thenReturn(BigDecimal.valueOf(500));
+		when(repository.getSaldoCartao(NUMERO_CARTAO)).thenReturn(valueOf(500));
 		this.mockMvc.perform(MockMvcRequestBuilders
 				.get("/cartoes/" + NUMERO_CARTAO)
-				.accept(MediaType.APPLICATION_JSON))
+				.accept(APPLICATION_JSON))
 		.andExpect(status().isOk())
 		.andExpect(content().string(containsString(VALOR)));
 	}
@@ -90,7 +92,7 @@ public class CartaoControllerTest {
 		.thenThrow(new CartaoNaoEncontradoException(CARTAO_INEXISTENTE));
 		this.mockMvc.perform(MockMvcRequestBuilders
 				.get("/cartoes/" + NUMERO_CARTAO)
-				.accept(MediaType.APPLICATION_JSON))
+				.accept(APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 	}
 }

@@ -7,15 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.vrtest.miniautorizador.controller.CartaoController;
+import com.vrtest.miniautorizador.controller.TransacaoController;
 
 @SpringBootTest
 public class SmokeTest {
 
 	@Autowired
-	private CartaoController controller;
+	private CartaoController cartaoController;
+
+	@Autowired
+	private TransacaoController transacaoController;
 
 	@Test
 	public void contextLoads() throws Exception {
-		assertThat(controller).isNotNull();
+		assertThat(cartaoController).isNotNull();
+		assertThat(transacaoController).isNotNull();
 	}
 }

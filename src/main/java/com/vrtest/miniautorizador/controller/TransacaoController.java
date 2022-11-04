@@ -21,6 +21,7 @@ import com.vrtest.miniautorizador.service.TransacaoService;
 @RequestMapping(value = "transacoes")
 public class TransacaoController {
 
+	private static final String OK = "OK";
 	private final TransacaoService service;
 
 	@Autowired
@@ -29,10 +30,10 @@ public class TransacaoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> criarCartao(@Valid @RequestBody TransacaoCommand command) {
+	public ResponseEntity<String> gerarTransacao(@Valid @RequestBody TransacaoCommand command) {
 		try {
 			this.service.gerarTransacao(command);
-			return new ResponseEntity<String>(CREATED);
+			return new ResponseEntity<String>(OK, CREATED);
 		} catch (SaldoInsuficienteException | CartaoNaoEncontradoException e) {
 			return new ResponseEntity<String>(e.getMessage(), UNPROCESSABLE_ENTITY);
 		}
