@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vrtest.miniautorizador.command.TransacaoCommand;
 import com.vrtest.miniautorizador.exception.CartaoNaoEncontradoException;
 import com.vrtest.miniautorizador.exception.SaldoInsuficienteException;
+import com.vrtest.miniautorizador.exception.ValorTransacaoInvalidoException;
 import com.vrtest.miniautorizador.service.TransacaoService;
 
 @RestController
@@ -34,7 +35,7 @@ public class TransacaoController {
 		try {
 			this.service.gerarTransacao(command);
 			return new ResponseEntity<String>(OK, CREATED);
-		} catch (SaldoInsuficienteException | CartaoNaoEncontradoException e) {
+		} catch (SaldoInsuficienteException | CartaoNaoEncontradoException | ValorTransacaoInvalidoException e) {
 			return new ResponseEntity<String>(e.getMessage(), UNPROCESSABLE_ENTITY);
 		}
 	}

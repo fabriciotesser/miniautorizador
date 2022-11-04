@@ -35,10 +35,12 @@ public class TransacaoControllerTest {
 	private static final String OK = "OK";
 	private static final BigDecimal DEZ = valueOf(10);
 	private static final BigDecimal QUINHENTOS = valueOf(500);
+	private static final BigDecimal VALOR_NEGATIVO = valueOf(-500);
 	private static final String SENHA_CARTAO = "1234";
 	private static final String NUMERO_CARTAO = "6549873025634501";
 	private static final String CARTAO_INEXISTENTE = "CARTAO_INEXISTENTE";
 	private static final String SALDO_INSUFICIENTE = "SALDO_INSUFICIENTE";
+	private static final String VALOR_INVALIDO = "VALOR_INVALIDO";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -107,5 +109,21 @@ public class TransacaoControllerTest {
 				.accept(APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity())
 		.andExpect(content().string(containsString(CARTAO_INEXISTENTE)));
+	}
+
+	@Test
+	public void deveRetornarErroQuandoValorInformadoForNegativo() throws Exception {
+		TransacaoCommand command = new TransacaoCommand();
+		command.setNumeroCartao(NUMERO_CARTAO);
+		command.setSenhaCartao(SENHA_CARTAO);
+		command.setValor(VALOR_NEGATIVO);
+		when(cartaoService.one(anyString(), anyString())).thenReturn(cartao);
+		this.mockMvc.perform(MockMvcRequestBuilders
+				.post("/transacoes")
+				.content(objectMapper.writeValueAsBytes(command))
+				.contentType(APPLICATION_JSON)
+				.accept(APPLICATION_JSON))
+		.andExpect(status().isUnprocessableEntity())
+		.andExpect(content().string(containsString(VALOR_INVALIDO)));
 	}
 }
