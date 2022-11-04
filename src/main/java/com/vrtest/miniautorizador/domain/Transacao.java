@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Transacao {
@@ -17,7 +18,17 @@ public class Transacao {
     @Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
+	@ManyToOne
+	private Cartao cartao;
+
 	private BigDecimal valor;
+
+	public Transacao() {}
+
+	public Transacao(Cartao cartao, BigDecimal valor) {
+		this.valor = valor;
+		cartao.addTransacao(this);
+	}
 
 	public Long getId() {
 		return id;
@@ -33,6 +44,14 @@ public class Transacao {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
+	}
+
+	public Cartao getCartao() {
+		return cartao;
+	}
+
+	public void setCartao(Cartao cartao) {
+		this.cartao = cartao;
 	}
 
 	@Override

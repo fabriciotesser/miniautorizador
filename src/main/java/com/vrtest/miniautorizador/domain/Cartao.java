@@ -1,9 +1,15 @@
 package com.vrtest.miniautorizador.domain;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.vrtest.miniautorizador.command.CartaoCommand;
 
@@ -14,6 +20,9 @@ public class Cartao {
 	private String numeroCartao;
 
 	private String senha;
+
+	@OneToMany(fetch = LAZY, cascade = ALL)
+	private List<Transacao> transacoes;
 
 	public String getNumeroCartao() {
 		return numeroCartao;
@@ -36,6 +45,24 @@ public class Cartao {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+
+	public List<Transacao> getTransacoes() {
+		return transacoes;
+	}
+
+	public void setTransacoes(List<Transacao> transacoes) {
+		this.transacoes = transacoes;
+	}
+
+	public void addTransacao(Transacao transacao) {
+		if(this.transacoes == null)
+			this.transacoes = new ArrayList<Transacao>();
+	
+		if(!this.transacoes.contains(transacao)) {
+			this.transacoes.add(transacao);
+			transacao.setCartao(this);
+		}
 	}
 
 	@Override
